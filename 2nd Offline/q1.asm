@@ -17,11 +17,9 @@
     F4 DB 0
     
     MSG1 DB 0DH,0AH,'Enter a series of character $'
-    MSG2 DB 0DH,0AH,'The second largest number is: $'
-    MSG3 DB 0DH,0AH,'All the numbers are equal$' 
     MSG4 DB 0DH,0AH,'PRESS ANY KEY TO CONTINUE. PRESS Q or q TO QUIT : $'
-    MSG5 DB 0DH,0AH,'VALID$'
-    MSG6 DB 0DH,0AH,'INVALID$'
+    MSG5 DB 0DH,0AH,'VALID PASSWORD$'
+    MSG6 DB 0DH,0AH,'INVALID PASSWORD$'
     MSG7 DB 0DH,0AH,'TOTAL UPPERCASE : $'  
     MSG8 DB 0DH,0AH,'TOTAL LOWERCASE : $'
     MSG9 DB 0DH,0AH,'TOTAL NUMBER : $'
