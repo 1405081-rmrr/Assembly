@@ -259,6 +259,9 @@ COUNT:
     
     JMP FINISH
 
-FINISH:       
+FINISH:
+mov AH,4CH
+int 21H
+       
 MAIN ENDP 
 END MAIN

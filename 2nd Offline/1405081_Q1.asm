@@ -74,7 +74,7 @@ PROMPT1:
     
     cmp AL,BL
     JZ  L0
-    JA  L1
+    JA  L1  ;a>b
     JB  L2
 
 L0:
@@ -99,7 +99,7 @@ L0_2:
 L1:
     
     cmp AL,CL
-    JE  L0_2
+    JE  L0_2 ;a>b now a=c
     JA  L1_1
     JB  L2
     
@@ -197,7 +197,10 @@ PRINT_CL:
     mov DL,0AH  ;LINE FEED
     int 21H
     
-    JMP PROMPT
+    JMP PROMPT 
+    
+mov AH,4CH
+int 21H
 FINISH:    
 MAIN ENDP 
 END MAIN

@@ -1,0 +1,141 @@
+.MODEL small
+
+.STACK 100h
+
+.DATA
+
+    A db 0
+    U DB 0
+    F1 DB 0
+    F2 DB 0
+    F3 DB 0
+    
+    MSG1 DB 0DH,0AH,'Enter a series of character : $'
+ 
+    MSG5 DB 0DH,0AH,'VALID PASSWORD$'
+    MSG6 DB 0DH,0AH,'INVALID PASSWORD$'
+
+.CODE
+
+MAIN PROC
+    
+mov AX,@DATA
+mov DS,AX  
+PRINT:
+    LEA DX,MSG1
+    MOV AH,9
+    INT 21H
+    JMP ENTER_CHARACTER
+    
+
+ENTER_CHARACTER:
+
+    mov AH,1
+    int 21h
+    mov A,AL                 
+    CMP AL,021H
+    JB VALIDCASE1
+    JA CHECK_NUM0 
+     
+CHECK_NUM0:
+
+    CMP AL,30H  ;0
+    JB ENTER_CHARACTER
+    JAE CHECK_NUM9
+CHECK_NUM9:
+
+    CMP AL,39H;57
+    JBE NUM_FOUND
+    JA CHECK_UPPERCASEA
+
+CHECK_UPPERCASEA:
+
+    CMP AL,040H ;64
+    JBE ENTER_CHARACTER
+    CMP AL,41H;65
+    JAE CHECK_UPPERCASEZ
+        
+    
+CHECK_UPPERCASEZ:
+
+    CMP AL,05AH ;90
+    JBE UPPER_FOUND
+    JA CHECK_LOWERCASEA
+             
+
+CHECK_LOWERCASEA:
+
+    CMP AL,060H ;96
+    JBE ENTER_CHARACTER
+    JA CHECK_LOWERCASEZ                 
+                      
+CHECK_LOWERCASEZ:
+
+    CMP AL,7AH ;122
+    JBE LOWER_FOUND
+    JA CHECK_123_126
+CHECK_123_126:
+       CMP AL,7EH
+       JBE ENTER_CHARACTER
+       JA VALIDCASE1
+    
+NUM_FOUND:
+
+    MOV BL,F1
+    INC BL
+    MOV F1,BL
+    JMP ENTER_CHARACTER
+UPPER_FOUND:
+
+    MOV BL,F2
+    INC BL
+    MOV F2,BL
+    JMP ENTER_CHARACTER
+    
+LOWER_FOUND:
+
+    MOV BL,F3
+    INC BL
+    MOV F3,BL
+    JMP ENTER_CHARACTER 
+    
+VALIDCASE1: ;number
+
+    MOV BL,F1 
+    MOV CL,U
+    CMP BL,CL
+    JA VALIDCASE2
+    JZ INVALID
+VALIDCASE2:   ;upper
+
+    MOV BL,F2
+    MOV CL,U
+    CMP BL,CL
+    JA VALIDCASE3
+    JZ INVALID
+VALIDCASE3:   ;lower
+
+    MOV BL,F3
+    MOV CL,U
+    CMP BL,CL
+    JA VALID
+    JZ INVALID
+    
+VALID:
+
+    LEA DX,MSG5
+    MOV AH,9
+    INT 21H
+    JMP FINISH
+INVALID:
+     LEA DX,MSG6
+    MOV AH,9
+    INT 21H
+    JMP FINISH
+       
+FINISH:
+mov AH,4CH
+int 21H
+     
+MAIN ENDP 
+END MAIN
