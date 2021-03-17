@@ -47,7 +47,7 @@ PROMPT1:
     mov A,AL
     
     mov AH,2
-    mov DL,20H
+    mov DL,20H  ;space er jnno
     int 21H
     
     mov AH,1
