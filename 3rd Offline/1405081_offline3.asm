@@ -18,8 +18,8 @@ NUM1 dw 0
 NUM2  dw 0
 SUM db 0 
 RESULT dw ?
-NEGA DB 0
-NEGA1 DB 0
+;NEGA DB 0
+;NEGA1 DB 0
 OPERATOR db ?    
 ASSIGN db '=$' 
 NEGATIVE db 0
@@ -42,14 +42,14 @@ main proc
     mov ah,09h
     int 21h
        
-    call number_input 
-    xor ax,ax
-    mov ax,TEMP
+    call number_input    
+    xor ax,ax            
+    mov ax,TEMP          
     CMP CX,0 
-    JE MOVE_NUMBER1
+    JE MOVE_NUMBER1     
     JMP MAKE_NEG
     
-    MAKE_NEG:
+    MAKE_NEG:             
     NEG AX
     
     MOVE_NUMBER1:
@@ -61,7 +61,7 @@ main proc
 
     
     ;number2 input
-    NUMBER2_INPUT:
+    NUMBER2_INPUT:    
     lea dx,MSG2                  
     mov ah,09h
     int 21h
@@ -80,24 +80,45 @@ main proc
     XOR CX,CX
     
     ;operator input
-    lea dx,MSG3
+    lea dx,MSG3            
     mov ah,09h
     int 21h
-    call operator_input
+    call operator_input    
        
     ;result output
     lea dx,MSG4                  
-    mov ah,09h
+    mov ah,09h         
     int 21h
-    
-    xor ax,ax
-    mov ax,NUM1 
-    mov X,ax
+    NEXT_NUM1:
+    xor ax,ax            
+    mov ax,NUM1          
+    ;mov X,ax
+    CMP AX,0
+    JL MAKE_NUM1 
+    MOV X,AX
+    CALL print_large_number 
+    JMP  NEXT_NUM2
     ;MOV BL,NEGA
     ;CMP BL,1
-    ;JE MNS 
+    ;JE MNS  
+    
+    MAKE_NUM1:
+    NEG AX
+    MOV X,AX 
+      mov dl,'['
+    mov ah,02h
+    int 21h
+    
+    mov dl,'-'
+    mov ah,02h
+    int 21h
+   
+    
     call print_large_number 
-    JMP NEXT_NUM
+    mov dl,']'
+    mov ah,02h
+    int 21h
+    JMP NEXT_NUM2
     ;MNS: 
     ;MOV NEGA,0
    ; MOV DL,'-'
@@ -105,19 +126,43 @@ main proc
    ; INT 21H
    ; CALL print_large_number 
     
-    NEXT_NUM:
+    NEXT_NUM2:
     xor dx,dx 
-    mov dl,OPERATOR 
+    mov dl,OPERATOR   
     mov ah,02h
     int 21h 
     
     xor ax,ax    
     mov ax,NUM2
-    mov X,ax 
-    MOV BL,NEGA
+    ;mov X,ax
+    CMP AX,0
+    JL MAKE_NUM2 
+    MOV X,AX
+    call print_large_number  
+    JMP ASSIGN1
+    
+    
+    MAKE_NUM2: 
+    NEG AX
+    MOV X,AX
+    mov dl,'['
+    mov ah,02h
+    int 21h
+    
+     mov dl,'-'
+    mov ah,02h
+    int 21h
+    
+   
+    
+    
+    ;MOV BL,NEGA
     ;CMP BL,1
     ;JE MNS1 
-    call print_large_number  
+    call print_large_number
+    mov dl,']'
+    mov ah,02h
+    int 21h  
     JMP ASSIGN1
     ;MNS1: 
     ;MOV NEGA,0
@@ -127,18 +172,23 @@ main proc
     ;CALL print_large_number 
     ASSIGN1:   
     mov dl,ASSIGN  
-    mov ah,02h
+    mov ah,02h      
     int 21h  
     
     xor ax,ax  
     mov ax,RESULT  
     mov X,ax 
+    cmp ax,0
+    je PLUS
     mov bl,NEGATIVE
     cmp bl,1
-    jne PLUS
+    jne PLUS 
+    CMP BL,NEGATIVE      
+    CMP BL,2
+    JE PLUS
     mov dl,'-'
     mov ah,02h
-    int 21h
+    int 21h 
     xor bx,bx
     xor dx,dx
      
@@ -161,7 +211,7 @@ number_input proc
     int 21h 
     cmp al,13   ;comparing character with carriage return
     je RETURN 
-    CMP AL,2DH
+    CMP AL,2DH ;
     JE NEGAT 
     cmp al,30h  ;comparing character with '0'
     jnge INPUT 
@@ -178,12 +228,12 @@ number_input proc
     
     xor ax,ax
     xor bx,bx 
-    
+                           
     mov ax,TEMP
-    mov bx,10
-    mul bx
+    mov bx,10             
+    mul bx                  
     add ax,DIGIT2
-     
+                           
    
     mov TEMP,ax
     
@@ -231,22 +281,32 @@ operator_input proc
     ADDITION:
     mov ax,NUM1
     mov bx,NUM2
-    add ax,bx  
+    add ax,bx
+    cmp ax,0
+    jl ADDI  
     mov RESULT,ax
     jmp RETURN2 
+    
+    ADDI:
+    NEG AX 
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    MOV RESULT,AX
+    JMP RETURN2
     
     SUBTRACTION:
     mov ax,NUM1 
     mov bx,NUM2
-    cmp ax,bx 
-    jge OK
+    cmp ax,bx  
+    jge OK            
     mov NEGATIVE,1
     JMP NOT_OK
     
     NOT_OK:
-    SUB AX,BX
-    NOT AX
-    INC AX
+    SUB AX,BX 
+    NOT AX  
+    INC AX      
     ;AND AX,255
     MOV RESULT,AX
     JMP RETURN2
@@ -258,13 +318,17 @@ operator_input proc
     
     MULTIPLICATION:
     CHECK_NEG1:
-    MOV AX,NUM1
-    CMP AX,0
+    MOV AX,NUM1   
+    CMP AX,0     
     JL CHANGE1
     JMP CHECK_NEG2 
     
     CHANGE1:
     NEG AX
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
     ;INC AX 
     
     CHECK_NEG2:
@@ -273,30 +337,64 @@ operator_input proc
     JL CHANGE2 
     JMP MULTI
     
-    CHANGE2:
+    CHANGE2:    
     NEG BX 
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
     ;INC BX
 
     
     MULTI:
     
     MUL BX 
-    CMP AX,32767
-    JG NEW_RESULT_MUL
-    MOV RESULT, AX
+    CMP AX,0
+    JL NEW_RESULT_MUL
+    MOV RESULT, AX 
+    ;mov NEGATIVE,1
     JMP RETURN2
      
      
     NEW_RESULT_MUL:
     NOT AX
-    INC AX
-    MOV RESULT,AX
+    INC AX       
+    MOV RESULT,AX 
+    MOV NEGATIVE,1
     JMP RETURN2
     
     DIVISION: 
+
     mov ax,NUM1
-    mov bx,NUM2
-    div NUM2
+    mov bx,NUM2 
+    CHECK_NEG11:
+    MOV AX,NUM1   
+    CMP AX,0      
+    JL CHANGE11
+    JMP CHECK_NEG12 
+    
+    CHANGE11:
+    NEG AX
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
+    ;INC AX 
+    
+    CHECK_NEG12:
+    MOV BX,NUM2
+    CMP BX,0
+    JL CHANGE12 
+    JMP DIVI
+    
+    CHANGE12:     
+    NEG BX 
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
+    DIVI:
+    div BX
     mov cx,1    ;to remove division overflow
     mov RESULT,ax
     jmp RETURN2 
@@ -314,17 +412,18 @@ operator_input endp
 ;# # # procedure to print multi digit number # # # 
 print_large_number proc  
     xor ax,ax
+    xor bx,bx
     mov ax,X
     mov bx,10
-    xor cx,cx
+    xor cx,cx        
     xor dx,dx
-    
-    LOOP_PUSH:
+                  
+    LOOP_PUSH:        
     xor dx,dx
-    div bx
-    push dx     ;pushes remainder of division in dx stack segment
-    inc cx      ;increments cx to count digits
-    cmp ax,0    ;compares ax if quotient is zero or not
+    div bx        
+    push dx    
+    inc cx     
+    cmp ax,0 
     jne LOOP_PUSH
     
     LOOP_POP:
