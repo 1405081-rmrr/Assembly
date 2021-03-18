@@ -18,8 +18,8 @@ NUM1 dw 0
 NUM2  dw 0
 SUM db 0 
 RESULT dw ?
-NEGA DB 0
-NEGA1 DB 0
+;NEGA DB 0
+;NEGA1 DB 0
 OPERATOR db ?    
 ASSIGN db '=$' 
 NEGATIVE db 0
@@ -42,14 +42,14 @@ main proc
     mov ah,09h
     int 21h
        
-    call number_input 
-    xor ax,ax
-    mov ax,TEMP
+    call number_input    ;eta ekta procedure. number input ney.
+    xor ax,ax            ;edi ax re clear kore fele. mane 0 bosay
+    mov ax,TEMP          ;negative kina check kore.cx=1 hole negative. cx=0 hole positive
     CMP CX,0 
-    JE MOVE_NUMBER1
+    JE MOVE_NUMBER1      ;negative na hole nai. move_number1 e jabe
     JMP MAKE_NEG
     
-    MAKE_NEG:
+    MAKE_NEG:             ;NEG er dara negative banaya dey bal
     NEG AX
     
     MOVE_NUMBER1:
@@ -61,7 +61,7 @@ main proc
 
     
     ;number2 input
-    NUMBER2_INPUT:
+    NUMBER2_INPUT:    ;same. arek nmbr input ney
     lea dx,MSG2                  
     mov ah,09h
     int 21h
@@ -80,18 +80,18 @@ main proc
     XOR CX,CX
     
     ;operator input
-    lea dx,MSG3
+    lea dx,MSG3            ;edi + - * / eisob input ney
     mov ah,09h
     int 21h
-    call operator_input
+    call operator_input    ;edi procedure. oikhane jaya kahini lekhum etar.
        
     ;result output
     lea dx,MSG4                  
-    mov ah,09h
+    mov ah,09h          ;edi rslr er leiga
     int 21h
     
-    xor ax,ax
-    mov ax,NUM1 
+    xor ax,ax            ;edi numbr re X e move kore. then print kore number ta.
+    mov ax,NUM1           ;kmne kore pore bltasi.
     mov X,ax
     ;MOV BL,NEGA
     ;CMP BL,1
@@ -107,14 +107,14 @@ main proc
     
     NEXT_NUM:
     xor dx,dx 
-    mov dl,OPERATOR 
+    mov dl,OPERATOR   ;edi operator print kore.
     mov ah,02h
     int 21h 
     
     xor ax,ax    
     mov ax,NUM2
     mov X,ax 
-    MOV BL,NEGA
+    ;MOV BL,NEGA
     ;CMP BL,1
     ;JE MNS1 
     call print_large_number  
@@ -127,7 +127,7 @@ main proc
     ;CALL print_large_number 
     ASSIGN1:   
     mov dl,ASSIGN  
-    mov ah,02h
+    mov ah,02h       ;assign upre ase. .Data er moddhe. deikhn ki ase.
     int 21h  
     
     xor ax,ax  
@@ -135,7 +135,7 @@ main proc
     mov X,ax 
     mov bl,NEGATIVE
     cmp bl,1
-    jne PLUS
+    jne PLUS       ;edi - print kore. jdi 65-90 hoy taile register e dhuke 25. ekhane aisha samne - boshe.
     mov dl,'-'
     mov ah,02h
     int 21h
@@ -161,7 +161,7 @@ number_input proc
     int 21h 
     cmp al,13   ;comparing character with carriage return
     je RETURN 
-    CMP AL,2DH
+    CMP AL,2DH ;jdi minus sign dei tahole Negat e chole jabe.CX ke 1 banabe
     JE NEGAT 
     cmp al,30h  ;comparing character with '0'
     jnge INPUT 
@@ -178,12 +178,12 @@ number_input proc
     
     xor ax,ax
     xor bx,bx 
-    
+                           ;EDI NORMAL. DHOREN 9 DILAM INPUT.SE CHARACTER HISEBE NEBE.TEMP
     mov ax,TEMP
-    mov bx,10
-    mul bx
+    mov bx,10               ; E INITIALLY 0 ACHE. 10*0=0. EI 0 ER SATHE 9 JOG KORE 9.EDIRE
+    mul bx                  ;TEMP E RAKHBE.TRPR 3 DILEN.3 RE DIGIT 2 TE RAKHBE. TEMP E ASE 9. 9 RE
     add ax,DIGIT2
-     
+                            ;10 DIA GUN DILE 90.THEN ADD AX,DIGIT2 MANE 90+3=93
    
     mov TEMP,ax
     
@@ -238,15 +238,15 @@ operator_input proc
     SUBTRACTION:
     mov ax,NUM1 
     mov bx,NUM2
-    cmp ax,bx 
-    jge OK
+    cmp ax,bx  ;jdi first number boro hoy tahole negative ke 1 banabe.trpr
+    jge OK            ;NOT_OK te jump debe
     mov NEGATIVE,1
     JMP NOT_OK
     
     NOT_OK:
-    SUB AX,BX
-    NOT AX
-    INC AX
+    SUB AX,BX ;say -9 first number.6 second.tahole -9+6=-3 hobe.
+    NOT AX    ;then NEG kore 1 barale 3 hobe. trpr age lekha ache.
+    INC AX      ;print korar somoy - dia debe
     ;AND AX,255
     MOV RESULT,AX
     JMP RETURN2
@@ -258,14 +258,14 @@ operator_input proc
     
     MULTIPLICATION:
     CHECK_NEG1:
-    MOV AX,NUM1
-    CMP AX,0
+    MOV AX,NUM1   ;first e check korbe minus disi kina. mane CX e 1 ache kina.
+    CMP AX,0      ;thakle CHANGE1 e jaya positive banaya disi NEX AX e jaya
     JL CHANGE1
     JMP CHECK_NEG2 
     
     CHANGE1:
     NEG AX
-   ; INC AX 
+    ;INC AX 
     
     CHECK_NEG2:
     MOV BX,NUM2
@@ -273,7 +273,7 @@ operator_input proc
     JL CHANGE2 
     JMP MULTI
     
-    CHANGE2:
+    CHANGE2:     ;same kaj eikhaneo
     NEG BX 
     ;INC BX
 
@@ -281,15 +281,15 @@ operator_input proc
     MULTI:
     
     MUL BX 
-    CMP AX,32767
-    JG NEW_RESULT_MUL
+    CMP AX,0
+    JL NEW_RESULT_MUL
     MOV RESULT, AX
     JMP RETURN2
      
      
     NEW_RESULT_MUL:
     NOT AX
-    INC AX
+    INC AX       ;-90*10=900 EIJNNO HOISE. THN APNER KTHA MOTO MINUS ER KAJ KORA LAGBE
     MOV RESULT,AX
     JMP RETURN2
     
@@ -316,12 +316,12 @@ print_large_number proc
     xor ax,ax
     mov ax,X
     mov bx,10
-    xor cx,cx
+    xor cx,cx        ;EDI BOI E ASE. JIGANOR KTHA NA. VAAG DIA ULTA KAJ.93 RE 10 DIA VAG DILE 
     xor dx,dx
-    
-    LOOP_PUSH:
+                      ;REMAINDER 3.SO 3 PUSH HBE. 9 RE 10 DIA VAG DILE 9 REMAINDER.
+    LOOP_PUSH:         ;RESULT 0. 9/10=0.SO LOOP SHES. STACK E NICHE ASE 3 ERPR 9.
     xor dx,dx
-    div bx
+    div bx             ;SO POP KORLE 9 ASBE THEN 3. SO 93 PRINT HBE .
     push dx     ;pushes remainder of division in dx stack segment
     inc cx      ;increments cx to count digits
     cmp ax,0    ;compares ax if quotient is zero or not
