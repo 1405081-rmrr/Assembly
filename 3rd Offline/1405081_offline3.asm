@@ -16,7 +16,9 @@ DIGIT2 dw 0
 TEMP dw 0
 NUM1 dw 0
 NUM2  dw 0
-SUM db 0 
+SUM db 0  
+F1 DB 0
+F2 DB 0
 RESULT dw ?
 ;NEGA DB 0
 ;NEGA1 DB 0
@@ -50,7 +52,8 @@ main proc
     JMP MAKE_NEG
     
     MAKE_NEG:             
-    NEG AX
+    NEG AX 
+    MOV F1,1
     
     MOVE_NUMBER1:
     mov NUM1,ax
@@ -72,6 +75,7 @@ main proc
     CMP CX,0
     JE MOVE_NUMBER2
     NEG AX
+    MOV F2,1
     
     MOVE_NUMBER2:
     mov NUM2,ax
@@ -93,8 +97,9 @@ main proc
     xor ax,ax            
     mov ax,NUM1          
     ;mov X,ax
-    CMP AX,0
-    JL MAKE_NUM1 
+    ;CMP AX,0
+    CMP F1,1
+    JE MAKE_NUM1 
     MOV X,AX
     CALL print_large_number 
     JMP  NEXT_NUM2
@@ -105,7 +110,7 @@ main proc
     MAKE_NUM1:
     NEG AX
     MOV X,AX 
-      mov dl,'['
+    mov dl,'['
     mov ah,02h
     int 21h
     
@@ -135,8 +140,9 @@ main proc
     xor ax,ax    
     mov ax,NUM2
     ;mov X,ax
-    CMP AX,0
-    JL MAKE_NUM2 
+    ;CMP AX,0
+    CMP F2,1
+    JE MAKE_NUM2 
     MOV X,AX
     call print_large_number  
     JMP ASSIGN1
@@ -281,19 +287,32 @@ operator_input proc
     ADDITION:
     mov ax,NUM1
     mov bx,NUM2
+    ADDITION_FINAL1:
     add ax,bx
     cmp ax,0
-    jl ADDI  
+    jL ADDI1
+    CMP AX,-32767
+    JL ADDI2  
     mov RESULT,ax
     jmp RETURN2 
     
-    ADDI:
+    ADDI1:
     NEG AX 
     MOV CL,NEGATIVE
     INC CL
     MOV NEGATIVE,CL
     MOV RESULT,AX
-    JMP RETURN2
+    JMP RETURN2 
+    
+    ADDI2:
+    
+    NEG AX
+    
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    MOV RESULT,AX
+    JMP RETURN2 
     
     SUBTRACTION:
     mov ax,NUM1 
@@ -319,8 +338,9 @@ operator_input proc
     MULTIPLICATION:
     CHECK_NEG1:
     MOV AX,NUM1   
-    CMP AX,0     
-    JL CHANGE1
+    ;CMP AX,0
+    CMP F1,1     
+    JE CHANGE1
     JMP CHECK_NEG2 
     
     CHANGE1:
@@ -333,8 +353,9 @@ operator_input proc
     
     CHECK_NEG2:
     MOV BX,NUM2
-    CMP BX,0
-    JL CHANGE2 
+    ;CMP BX,0
+    CMP F2,1
+    JE CHANGE2 
     JMP MULTI
     
     CHANGE2:    
@@ -369,8 +390,9 @@ operator_input proc
     mov bx,NUM2 
     CHECK_NEG11:
     MOV AX,NUM1   
-    CMP AX,0      
-    JL CHANGE11
+    ;CMP AX,0
+    CMP F1,1      
+    JE CHANGE11
     JMP CHECK_NEG12 
     
     CHANGE11:
@@ -383,8 +405,9 @@ operator_input proc
     
     CHECK_NEG12:
     MOV BX,NUM2
-    CMP BX,0
-    JL CHANGE12 
+    ;CMP BX,0
+    CMP F2,1
+    JE CHANGE12 
     JMP DIVI
     
     CHANGE12:     
