@@ -89,15 +89,27 @@ main proc
     lea dx,MSG4                  
     mov ah,09h          ;edi rslr er leiga
     int 21h
-    
+    NEXT_NUM1:
     xor ax,ax            ;edi numbr re X e move kore. then print kore number ta.
     mov ax,NUM1           ;kmne kore pore bltasi.
-    mov X,ax
+    ;mov X,ax
+    CMP AX,0
+    JL MAKE_NUM1 
+    MOV X,AX
+    CALL print_large_number 
+    JMP  NEXT_NUM2
     ;MOV BL,NEGA
     ;CMP BL,1
-    ;JE MNS 
+    ;JE MNS  
+    
+    MAKE_NUM1:
+    NEG AX
+    MOV X,AX 
+    mov dl,'-'
+    mov ah,02h
+    int 21h
     call print_large_number 
-    JMP NEXT_NUM
+    JMP NEXT_NUM2
     ;MNS: 
     ;MOV NEGA,0
    ; MOV DL,'-'
@@ -105,7 +117,7 @@ main proc
    ; INT 21H
    ; CALL print_large_number 
     
-    NEXT_NUM:
+    NEXT_NUM2:
     xor dx,dx 
     mov dl,OPERATOR   ;edi operator print kore.
     mov ah,02h
@@ -113,7 +125,22 @@ main proc
     
     xor ax,ax    
     mov ax,NUM2
-    mov X,ax 
+    ;mov X,ax
+    CMP AX,0
+    JL MAKE_NUM2 
+    MOV X,AX
+    call print_large_number  
+    JMP ASSIGN1
+    
+    
+    MAKE_NUM2: 
+    NEG AX
+    MOV X,AX
+    mov dl,'-'
+    mov ah,02h
+    int 21h
+    
+    
     ;MOV BL,NEGA
     ;CMP BL,1
     ;JE MNS1 
@@ -135,7 +162,10 @@ main proc
     mov X,ax 
     mov bl,NEGATIVE
     cmp bl,1
-    jne PLUS       ;edi - print kore. jdi 65-90 hoy taile register e dhuke 25. ekhane aisha samne - boshe.
+    jne PLUS 
+    CMP BL,NEGATIVE      ;edi - print kore. jdi 65-90 hoy taile register e dhuke 25. ekhane aisha samne - boshe.
+    CMP BL,2
+    JE PLUS
     mov dl,'-'
     mov ah,02h
     int 21h
@@ -265,6 +295,10 @@ operator_input proc
     
     CHANGE1:
     NEG AX
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
     ;INC AX 
     
     CHECK_NEG2:
@@ -275,6 +309,10 @@ operator_input proc
     
     CHANGE2:     ;same kaj eikhaneo
     NEG BX 
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
     ;INC BX
 
     
@@ -283,20 +321,50 @@ operator_input proc
     MUL BX 
     CMP AX,0
     JL NEW_RESULT_MUL
-    MOV RESULT, AX
+    MOV RESULT, AX 
+    ;mov NEGATIVE,1
     JMP RETURN2
      
      
     NEW_RESULT_MUL:
     NOT AX
     INC AX       ;-90*10=900 EIJNNO HOISE. THN APNER KTHA MOTO MINUS ER KAJ KORA LAGBE
-    MOV RESULT,AX
+    MOV RESULT,AX 
+    MOV NEGATIVE,1
     JMP RETURN2
     
     DIVISION: 
+
     mov ax,NUM1
-    mov bx,NUM2
-    div NUM2
+    mov bx,NUM2 
+    CHECK_NEG11:
+    MOV AX,NUM1   ;first e check korbe minus disi kina. mane CX e 1 ache kina.
+    CMP AX,0      ;thakle CHANGE1 e jaya positive banaya disi NEX AX e jaya
+    JL CHANGE11
+    JMP CHECK_NEG12 
+    
+    CHANGE11:
+    NEG AX
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
+    ;INC AX 
+    
+    CHECK_NEG12:
+    MOV BX,NUM2
+    CMP BX,0
+    JL CHANGE12 
+    JMP DIVI
+    
+    CHANGE12:     ;same kaj eikhaneo
+    NEG BX 
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    XOR CX,CX
+    DIVI:
+    div BX
     mov cx,1    ;to remove division overflow
     mov RESULT,ax
     jmp RETURN2 
