@@ -160,6 +160,8 @@ main proc
     xor ax,ax  
     mov ax,RESULT  
     mov X,ax 
+    cmp ax,0
+    je PLUS
     mov bl,NEGATIVE
     cmp bl,1
     jne PLUS 
@@ -261,9 +263,19 @@ operator_input proc
     ADDITION:
     mov ax,NUM1
     mov bx,NUM2
-    add ax,bx  
+    add ax,bx
+    cmp ax,0
+    jl ADDI  
     mov RESULT,ax
     jmp RETURN2 
+    
+    ADDI:
+    NEG AX 
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
+    MOV RESULT,AX
+    JMP RETURN2
     
     SUBTRACTION:
     mov ax,NUM1 
@@ -382,6 +394,7 @@ operator_input endp
 ;# # # procedure to print multi digit number # # # 
 print_large_number proc  
     xor ax,ax
+    xor bx,bx
     mov ax,X
     mov bx,10
     xor cx,cx        ;EDI BOI E ASE. JIGANOR KTHA NA. VAAG DIA ULTA KAJ.93 RE 10 DIA VAG DILE 
