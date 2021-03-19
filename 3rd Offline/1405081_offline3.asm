@@ -184,20 +184,29 @@ main proc
     xor ax,ax  
     mov ax,RESULT  
     mov X,ax 
-    cmp ax,0
-    je PLUS
-    mov bl,NEGATIVE
-    cmp bl,1
-    jne PLUS 
-    CMP BL,NEGATIVE      
-    CMP BL,2
+    cmp ax,0 ; answer 0 dile +- print hbena
+    je PLUS 
+    XOR BX,BX
+    mov bl,NEGATIVE 
+    CMP BL,0
     JE PLUS
+    cmp bl,1
+    je MINUS 
+    CMP BL,NEGATIVE      
+    CMP BL,3
+    JE MINUS 
+    CMP BL,2
+    JE PLUS 
+    
+    
+    
+    MINUS:
     mov dl,'-'
     mov ah,02h
     int 21h 
     xor bx,bx
     xor dx,dx
-     
+    JMP PLUS
     PLUS:
     call print_large_number            
  
@@ -285,34 +294,41 @@ operator_input proc
     jne WRONG 
     
     ADDITION:
+    XOR CX,CX
     mov ax,NUM1
     mov bx,NUM2
-    ADDITION_FINAL1:
-    add ax,bx
-    cmp ax,0
-    jL ADDI1
-    CMP AX,-32767
-    JL ADDI2  
-    mov RESULT,ax
-    jmp RETURN2 
-    
-    ADDI1:
-    NEG AX 
-    MOV CL,NEGATIVE
-    INC CL
-    MOV NEGATIVE,CL
-    MOV RESULT,AX
-    JMP RETURN2 
-    
-    ADDI2:
-    
+    ADD AX,BX
+    CMP AX,0
+    JL ADD_FINAL
+    MOV RESULT,AX 
+    JMP OKA
+    ADD_FINAL:
     NEG AX
+    MOV RESULT,AX
+    JMP OKA
+    OKA: 
+    XOR CX,CX
+    MOV CL,F1
+    CMP CL,1
+    JE OKA2
+    JMP RETURN2
     
+    OKA2:
+    XOR CX,CX
+    MOV CL,F2
+    CMP CL,1 
+    JE INC_NEG
+    JNE RETURN2
+    
+    INC_NEG:
+    XOR CX,CX
     MOV CL,NEGATIVE
     INC CL
+    INC CL
+    INC CL
     MOV NEGATIVE,CL
-    MOV RESULT,AX
-    JMP RETURN2 
+    JMP RETURN2
+    
     
     SUBTRACTION:
     mov ax,NUM1 
@@ -378,8 +394,9 @@ operator_input proc
      
      
     NEW_RESULT_MUL:
-    NOT AX
-    INC AX       
+    NEG AX
+    ;INC AX 
+          
     MOV RESULT,AX 
     MOV NEGATIVE,1
     JMP RETURN2
