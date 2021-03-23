@@ -118,7 +118,74 @@
      XOR CX,CX,
      XOR DX,DX
      XOR SI,SI
-     XOR DI,DI     
+     XOR DI,DI 
+     
+        
+     
+     INPUT_NUMBER11:
+     MOV AH,2
+     MOV DL,0DH
+     INT 21H 
+     MOV DL,0AH
+     INT 21H
+     MOV BX,0
+     MOV DI,2 
+     MOV SI,2
+     LEA DX, PROMPT3              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     
+     MOV AH,1
+     
+     INT 21H 
+     MOV ARRAY2[BX][DI],AX 
+     
+     INPUT_NUMBER12:
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H 
+     mov bx,0
+     ADD DI,2
+     LEA DX, PROMPT4              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY2[BX][DI],AX 
+     
+     INPUT_NUMBER13:
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     ADD DI,2
+     MOV BX,4
+     LEA DX, PROMPT5              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY2[BX][DI],AX
+     
+     INPUT_NUMBER14: 
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     ADD DI,2
+     MOV BX,4
+     LEA DX, PROMPT6              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY2[BX][DI],AX
+     jmp PRINT    
      
      PRINT: 
      MOV AH,2
@@ -143,9 +210,9 @@
      MOV AX,A
      MOV CX,B
     ; ADD AX,CX
-     MOV RESULT,AX
+     MOV RESULT,cX
      CBW 
-     MOV R,AL
+     MOV R,CL
      ADD R,30H
      MOV AH,2 
      MOV DL,R
@@ -174,9 +241,9 @@
      MOV AX,A
      MOV CX,B
     ; ADD AX,CX
-     MOV RESULT,AX 
+     MOV RESULT,CX 
      CBW
-     MOV R,AL 
+     MOV R,CL 
      ADD R,48
      MOV AH,2 
      MOV DL,R
@@ -201,9 +268,9 @@
      MOV AX,A
      MOV CX,B
      ;ADD AX,CX
-     MOV RESULT,AX 
+     MOV RESULT,CX 
      CBW
-     MOV R,AL
+     MOV R,CL
      ADD R,30H 
      MOV AH,2 
      MOV DL,R
@@ -228,9 +295,9 @@
      MOV CX,B
      ;ADD AX,CX 
     
-     MOV RESULT,AX
+     MOV RESULT,CX
      CBW
-     MOV R,AL
+     MOV R,CL
      ADD R,30H 
      MOV AH,2
      MOV DL,R
