@@ -11,12 +11,13 @@
     PROMPT7  DB  'SECOND MATRIX : ',0DH,0AH,'$\'
     
     
-
+    A DW 0
+    B DW 0
     ARRAY1 DW 0
     ARRAY2 DW 0
     FINALARRAY DB 0
     RESULT DW 0      
-
+    R DB 0
  .CODE
    MAIN PROC
      MOV AX, @DATA                ; initialize DS
@@ -50,8 +51,9 @@
      INIT_BX1:
      MOV BX,0
      MOV SI,2 
+     MOV DI,2
      
-     
+          
     
      
      INPUT_NUMBER1: 
@@ -71,7 +73,7 @@
      mov DL,0AH  ;LINE FEED
      int 21H 
      mov bx,0
-     ADD SI,2
+     MOV SI,4
      LEA DX, PROMPT4              ; load and display the string PROMPT
      MOV AH, 9
      INT 21H 
@@ -86,7 +88,7 @@
      int 21H
      mov DL,0AH  ;LINE FEED
      int 21H
-     ADD SI,2
+     MOV SI,6
      MOV BX,4
      LEA DX, PROMPT5              ; load and display the string PROMPT
      MOV AH, 9
@@ -101,7 +103,7 @@
      int 21H
      mov DL,0AH  ;LINE FEED
      int 21H
-     ADD SI,2
+     MOV SI,8
      MOV BX,4
      LEA DX, PROMPT6              ; load and display the string PROMPT
      MOV AH, 9
@@ -109,9 +111,14 @@
      MOV AH,1
      INT 21H 
      MOV ARRAY1[BX][SI],AX
-     jmp PRINT
      
-     
+
+     XOR AX,AX
+     XOR BX,BX
+     XOR CX,CX,
+     XOR DX,DX
+     XOR SI,SI
+     XOR DI,DI     
      
      PRINT: 
      MOV AH,2
@@ -121,13 +128,27 @@
      INT 21H
      MOV SI,2
      MOV BX,0
-     XOR DX,DX
+     MOV DI,2
+     XOR DX,DX 
+     XOR CX,CX
      MOV AX,ARRAY1[BX][SI]
-     SUB AX,30H
-     MOV RESULT,AX 
+     SUB AL,30H 
+     MOV A,AX
+     XOR AX,AX
+     MOV AX,ARRAY2[BX][DI] 
+     SUB AL,30H
+     MOV B,AX
+     XOR AX,AX
+     XOR CX,CX
+     MOV AX,A
+     MOV CX,B
+    ; ADD AX,CX
+     MOV RESULT,AX
+     CBW 
+     MOV R,AL
+     ADD R,30H
      MOV AH,2 
-     ADD RESULT,30H
-     MOV DX,RESULT
+     MOV DL,R
      INT 21H   
      
      
@@ -135,15 +156,30 @@
      MOV AH,2
      MOV DL,20H
      INT 21H
-     ADD SI,2
+     MOV SI,4
      MOV BX,0
-     XOR DX,DX
+     ADD DI,2
+     XOR DX,DX 
+     XOR CX,CX 
+     XOR AX,AX
      MOV AX,ARRAY1[BX][SI]
-     SUB AX,30H
+     SUB AL,30H 
+     MOV A,AX 
+     XOR AX,AX
+     MOV AX,ARRAY2[BX][DI] 
+     SUB AL,30H 
+     MOV B,AX 
+     XOR AX,AX
+     XOR CX,CX
+     MOV AX,A
+     MOV CX,B
+    ; ADD AX,CX
      MOV RESULT,AX 
+     CBW
+     MOV R,AL 
+     ADD R,48
      MOV AH,2 
-     ADD RESULT,30H
-     MOV DX,RESULT
+     MOV DL,R
      INT 21H
      
      MOV AH,2
@@ -151,30 +187,53 @@
      INT 21H 
      MOV DL,0AH
      INT 21H
-     ADD SI,2
-     MOV BX,4
+     MOV SI,6
+     MOV BX,4 
+     ADD DI,2
      XOR DX,DX
+     XOR CX,CX
      MOV AX,ARRAY1[BX][SI]
-     SUB AX,30H
+     SUB AL,30H  
+     MOV A,AX
+     MOV AX,ARRAY2[BX][DI] 
+     SUB AL,30H  
+     MOV B,AX
+     MOV AX,A
+     MOV CX,B
+     ;ADD AX,CX
      MOV RESULT,AX 
+     CBW
+     MOV R,AL
+     ADD R,30H 
      MOV AH,2 
-     ADD RESULT,30H
-     MOV DX,RESULT
+     MOV DL,R
      INT 21H   
      
      
      MOV AH,2
      MOV DL,20H
      INT 21H
-     ADD SI,2
+     MOV SI,8
      MOV BX,4
+     ADD DI,2
      XOR DX,DX
+     XOR CX,CX
      MOV AX,ARRAY1[BX][SI]
-     SUB AX,30H
-     MOV RESULT,AX 
-     MOV AH,2 
-     ADD RESULT,30H
-     MOV DX,RESULT 
+     SUB AL,30H 
+     MOV A,AX
+     MOV AX,ARRAY2[BX][DI] 
+     SUB AL,30H 
+     MOV B,AX
+     MOV AX,A
+     MOV CX,B
+     ;ADD AX,CX 
+    
+     MOV RESULT,AX
+     CBW
+     MOV R,AL
+     ADD R,30H 
+     MOV AH,2
+     MOV DL,R
      INT 21H
      
 
