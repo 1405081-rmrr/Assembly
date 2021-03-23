@@ -100,9 +100,17 @@ main proc
     ;CMP AX,0
     CMP F1,1
     JE MAKE_NUM1 
-    MOV X,AX
+    MOV X,AX 
+    XOR DX,DX
+    mov dl,'['
+    mov ah,02h
+    int 21h
     CALL print_large_number 
-    JMP  NEXT_NUM2
+    XOR DX,DX
+    mov dl,']'
+    mov ah,02h
+    int 21h 
+    JMP  NEXT_NUM2 
     ;MOV BL,NEGA
     ;CMP BL,1
     ;JE MNS  
@@ -132,8 +140,16 @@ main proc
    ; CALL print_large_number 
     
     NEXT_NUM2:
-    xor dx,dx 
+    xor dx,dx
+    mov dl,'['
+    mov ah,02h
+    int 21h
+    XOR DX,DX 
     mov dl,OPERATOR   
+    mov ah,02h
+    int 21h
+    XOR DX,DX
+    mov dl,']'
     mov ah,02h
     int 21h 
     
@@ -155,7 +171,7 @@ main proc
     mov ah,02h
     int 21h
     
-     mov dl,'-'
+    mov dl,'-'
     mov ah,02h
     int 21h
     
@@ -176,10 +192,12 @@ main proc
    ; MOV AH,02H
     ;INT 21H
     ;CALL print_large_number 
-    ASSIGN1:   
+    ASSIGN1: 
+      
     mov dl,ASSIGN  
     mov ah,02h      
-    int 21h  
+    int 21h 
+  
     
     xor ax,ax  
     mov ax,RESULT  
@@ -196,7 +214,7 @@ main proc
     CMP BL,3
     JE MINUS 
     CMP BL,2
-    JE PLUS 
+    JE PLUS
     
     
     
@@ -303,7 +321,11 @@ operator_input proc
     MOV RESULT,AX 
     JMP OKA
     ADD_FINAL:
-    NEG AX
+    NEG AX 
+    XOR CX,CX
+    MOV CL,NEGATIVE
+    INC CL
+    MOV NEGATIVE,CL
     MOV RESULT,AX
     JMP OKA
     OKA: 
