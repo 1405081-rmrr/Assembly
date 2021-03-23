@@ -109,200 +109,74 @@
      MOV AH,1
      INT 21H 
      MOV ARRAY1[BX][SI],AX
-    
-    
-    
-       
-     XOR AX,AX
-     XOR BX,BX
-     XOR SI,SI
-     XOR CX,CX
-     XOR DX,DX
-     
-     
-     MOV BX,0
-     MOV SI,2  
-     
-     SECOND_MATRIX: 
-     mov AH,2
-     mov DL,0DH  ;CARRIAGE RETURN
-     int 21H
-     mov DL,0AH  ;LINE FEED
-     int 21H
-     LEA DX, PROMPT7               ; load and display the string PROMPT
-     MOV AH, 9
-     INT 21H 
-     mov AH,2
-     mov DL,0DH  ;CARRIAGE RETURN
-     int 21H
-     mov DL,0AH  ;LINE FEED
-     int 21H 
-     
-     
-     INPUT_NUMBER11: 
-     LEA DX, PROMPT3              ; load and display the string PROMPT
-     MOV AH, 9
-     INT 21H 
-     MOV SI,2
-     MOV BX,0
-     MOV AH,1
-     INT 21H 
-     MOV ARRAY2[BX][SI],AX 
-     
-     INPUT_NUMBER12:
-     mov AH,2
-     mov DL,0DH  ;CARRIAGE RETURN
-     int 21H
-     mov DL,0AH  ;LINE FEED
-     int 21H
-     ADD SI,2
-     MOV BX,0
-     LEA DX, PROMPT4              ; load and display the string PROMPT
-     MOV AH, 9
-     INT 21H 
-     
-     MOV AH,1
-     INT 21H 
-     MOV ARRAY2[BX][SI],AX 
-     
-     INPUT_NUMBER13:
-      mov AH,2
-     mov DL,0DH  ;CARRIAGE RETURN
-     int 21H
-     mov DL,0AH  ;LINE FEED
-     int 21H
-     ADD SI,2
-     MOV BX,4
-     LEA DX, PROMPT5              ; load and display the string PROMPT
-     MOV AH, 9
-     INT 21H 
-     MOV AH,1
-     INT 21H 
-     MOV ARRAY2[BX][SI],AX
-     
-     INPUT_NUMBER14: 
-     mov AH,2
-     mov DL,0DH  ;CARRIAGE RETURN
-     int 21H
-     mov DL,0AH  ;LINE FEED
-     int 21H
-     ADD SI,2
-     MOV BX,4
-     LEA DX, PROMPT6              ; load and display the string PROMPT
-     MOV AH, 9
-     INT 21H 
-     MOV AH,1
-     INT 21H 
-     MOV ARRAY2[BX][SI],AX
+     jmp PRINT
      
      
      
-     
-     
-     NEW_LINE:
-     mov AH,2
-     mov DL,0DH  ;CARRIAGE RETURN
-     int 21H
-     mov DL,0AH  ;LINE FEED
-     int 21H
-
-     XOR AX,AX
-     XOR BX,BX
-     XOR SI,SI
-     XOR CX,CX
-     XOR DX,DX
-     
-     
-     MOV BX,0
-     MOV SI,2
-      
-      ADDI1:
-      
-      MOV AX,ARRAY1[BX][SI] 
-      SUB AX,30H
-      MOV CX,ARRAY2[BX][SI]
-      SUB CX,30H
-      ADD AX,CX 
-      ADD AX,30H
-      MOV RESULT,AX
-      XOR DX,DX
-      MOV AH, 2 
-                ; set output function
-      MOV DX,RESULT              ; set DL=20H
-      INT 21H   
-     ; call print_large_number
-      
-      
-      ADDI2:
-      ADD SI,2
-      MOV BX,0 
-      MOV AH,2
-      MOV DL,20H
-      INT 21H 
-      XOR AX,AX
-      XOR CX,CX
-      MOV AX,ARRAY1[BX][SI] 
-      SUB AX,30H
-      MOV CX,ARRAY2[BX][SI]
-      SUB CX,30H
-      ADD AX,CX 
-      XOR DX,DX
-      ADD AX,30H
-      MOV RESULT,AX
-      MOV AH, 2 
-                     ; set output function
-      MOV DX, RESULT              ; set DL=20H
-      INT 21H   
-    ; call print_large_number
-      
-      
-      ADD3: 
-      
+     PRINT: 
      MOV AH,2
      MOV DL,0DH
      INT 21H
      MOV DL,0AH
      INT 21H
-      ADD SI,2
-      MOV BX,4
-      MOV AX,ARRAY1[BX][SI] 
-      SUB AX,30H
-      MOV CX,ARRAY2[BX][SI] 
-      SUB CX,30H
-      ADD AX,CX
-      XOR DX,DX
-      ADD AX,30H
-      MOV RESULT,AX
-      MOV AH, 2 
-                    ; set output function
-      MOV DX,RESULT              ; set DL=20H
-      INT 21H   
-      ;call print_large_number
+     MOV SI,2
+     MOV BX,0
+     XOR DX,DX
+     MOV AX,ARRAY1[BX][SI]
+     SUB AX,30H
+     MOV RESULT,AX 
+     MOV AH,2 
+     ADD RESULT,30H
+     MOV DX,RESULT
+     INT 21H   
      
-      
-      ADD4: 
-      MOV AH,2
-      MOV DL,20H
-      INT 21H
-      ADD SI,2
-      MOV BX,4
-      MOV AX,ARRAY1[BX][SI]
-      SUB AX,30H
-      MOV CX,ARRAY2[BX][SI]
-      SUB AX,30H
-      ADD AX,CX
-      XOR DX,DX
-      ADD AX,30H
-      MOV RESULT,AX
-      MOV AH, 2 
-                   ; set output function
-      MOV DX,RESULT             ; set DL=20H
-      INT 21H   
-     ; call print_large_number
-
-      
-
-    
+     
+     
+     MOV AH,2
+     MOV DL,20H
+     INT 21H
+     ADD SI,2
+     MOV BX,0
+     XOR DX,DX
+     MOV AX,ARRAY1[BX][SI]
+     SUB AX,30H
+     MOV RESULT,AX 
+     MOV AH,2 
+     ADD RESULT,30H
+     MOV DX,RESULT
+     INT 21H
+     
+     MOV AH,2
+     MOV DL,0DH
+     INT 21H 
+     MOV DL,0AH
+     INT 21H
+     ADD SI,2
+     MOV BX,4
+     XOR DX,DX
+     MOV AX,ARRAY1[BX][SI]
+     SUB AX,30H
+     MOV RESULT,AX 
+     MOV AH,2 
+     ADD RESULT,30H
+     MOV DX,RESULT
+     INT 21H   
+     
+     
+     MOV AH,2
+     MOV DL,20H
+     INT 21H
+     ADD SI,2
+     MOV BX,4
+     XOR DX,DX
+     MOV AX,ARRAY1[BX][SI]
+     SUB AX,30H
+     MOV RESULT,AX 
+     MOV AH,2 
+     ADD RESULT,30H
+     MOV DX,RESULT 
+     INT 21H
+     
 
 END_: 
    
