@@ -2,42 +2,201 @@
  .STACK 100H
 
  .DATA
-    PROMPT  DB  'The resultant 2X2 matrix is  : ',0DH,0AH,'$\'
-
-    ARRAY1   DW  9,9
-             DW  9,9
-            
-    ARRAY2   DW 9,9
-             DW 9,9
+    PROMPT  DB  'The resultant 2X2 matrix is  : ',0DH,0AH,'$\' 
+    PROMPT2  DB  'FIRST MATRIX  : ',0DH,0AH,'$\' 
+    PROMPT3  DB  'FIRST ELEMENT : ',0DH,0AH,'$\'
+    PROMPT4  DB  'SECOND ELEMENT  : ',0DH,0AH,'$\'
+    PROMPT5  DB  'THIRD ELEMENT  : ',0DH,0AH,'$\'
+    PROMPT6  DB  'FOURTH ELEMENT  : ',0DH,0AH,'$\'
+    PROMPT7  DB  'SECOND MATRIX : ',0DH,0AH,'$\'
     
-    A DW 0
-    B DW 0
-    RESULT DW 0
-    C1 DW 0
-    B1 DW 0        
+    
+
+    ARRAY1 DW 0
+    ARRAY2 DW 0
+    FINALARRAY DB 0
+    RESULT DW 0      
 
  .CODE
    MAIN PROC
      MOV AX, @DATA                ; initialize DS
      MOV DS, AX
+     
+     XOR AX,AX
+     XOR BX,BX
+     XOR CX,CX
+     XOR DX,DX
+     XOR SI,SI
 
      LEA DX, PROMPT               ; load and display the string PROMPT
      MOV AH, 9
      INT 21H 
      
-     INIT_ARRAY: 
+     
+     LEA DX, PROMPT2              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H
+     
+     
+     
+     
+     
      XOR AX,AX
      XOR BX,BX
+     XOR SI,SI
+     XOR CX,CX
+     
+      
+     INIT_BX1:
+     MOV BX,0
+     MOV SI,2 
+     
+     
+    
+     
+     INPUT_NUMBER1: 
+     LEA DX, PROMPT3              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     
+     MOV AH,1
+     
+     INT 21H 
+     MOV ARRAY1[BX][SI],AX 
+     
+     INPUT_NUMBER2:
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H 
+     mov bx,0
+     ADD SI,2
+     LEA DX, PROMPT4              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY1[BX][SI],AX 
+     
+     INPUT_NUMBER3:
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     ADD SI,2
+     MOV BX,4
+     LEA DX, PROMPT5              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY1[BX][SI],AX
+     
+     INPUT_NUMBER4: 
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     ADD SI,2
+     MOV BX,4
+     LEA DX, PROMPT6              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY1[BX][SI],AX
+    
+    
+    
+       
+     XOR AX,AX
+     XOR BX,BX
+     XOR SI,SI
      XOR CX,CX
      XOR DX,DX
      
-     LEA DI,ARRAY1
-     LEA SI,ARRAY2 
+     
+     MOV BX,0
+     MOV SI,2  
+     
+     SECOND_MATRIX: 
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     LEA DX, PROMPT7               ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H 
      
      
-     INIT_CX:
-     MOV CX,2
-     JMP INIT_BX 
+     INPUT_NUMBER11: 
+     LEA DX, PROMPT3              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     MOV SI,2
+     MOV BX,0
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY2[BX][SI],AX 
+     
+     INPUT_NUMBER12:
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     ADD SI,2
+     MOV BX,0
+     LEA DX, PROMPT4              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY2[BX][SI],AX 
+     
+     INPUT_NUMBER13:
+      mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     ADD SI,2
+     MOV BX,4
+     LEA DX, PROMPT5              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY2[BX][SI],AX
+     
+     INPUT_NUMBER14: 
+     mov AH,2
+     mov DL,0DH  ;CARRIAGE RETURN
+     int 21H
+     mov DL,0AH  ;LINE FEED
+     int 21H
+     ADD SI,2
+     MOV BX,4
+     LEA DX, PROMPT6              ; load and display the string PROMPT
+     MOV AH, 9
+     INT 21H 
+     MOV AH,1
+     INT 21H 
+     MOV ARRAY2[BX][SI],AX
+     
+     
+     
      
      
      NEW_LINE:
@@ -46,85 +205,110 @@
      int 21H
      mov DL,0AH  ;LINE FEED
      int 21H
+
+     XOR AX,AX
+     XOR BX,BX
+     XOR SI,SI
+     XOR CX,CX
+     XOR DX,DX
      
-     INIT_BX:
-     MOV BX,2
      
-      SET_ARRAY1:
+     MOV BX,0
+     MOV SI,2
       
-      MOV AX,[DI]
-      MOV A,AX 
+      ADDI1:
       
-      SET_ARRAY2:
-      MOV AX,[SI]
-      MOV B,AX
-      
-      
-      ADDI:
-      XOR AX,AX
-      MOV AX,A
-      ADD AX,B
+      MOV AX,ARRAY1[BX][SI] 
+      SUB AX,30H
+      MOV CX,ARRAY2[BX][SI]
+      SUB CX,30H
+      ADD AX,CX 
+      ADD AX,30H
       MOV RESULT,AX
-      
-      MOV AH, 2                ; set output function
-      MOV DL, 20H              ; set DL=20H
+      XOR DX,DX
+      MOV AH, 2 
+                ; set output function
+      MOV DX,RESULT              ; set DL=20H
       INT 21H   
-      MOV AH,2 
-      MOV C1,CX
-      MOV B1,BX
-      call print_large_number
-      ;ADD RESULT,30H
-      ;MOV DX,RESULT
-     ; INT 21H
-      
-      RESET:
-      MOV CX,C1
-      MOV BX,B1
+     ; call print_large_number
       
       
-      INC_DI_SI:
-      ADD DI,2
+      ADDI2:
       ADD SI,2
-      DEC BX
-      JNZ SET_ARRAY1
-      JZ DEC_CX 
+      MOV BX,0 
+      MOV AH,2
+      MOV DL,20H
+      INT 21H 
+      XOR AX,AX
+      XOR CX,CX
+      MOV AX,ARRAY1[BX][SI] 
+      SUB AX,30H
+      MOV CX,ARRAY2[BX][SI]
+      SUB CX,30H
+      ADD AX,CX 
+      XOR DX,DX
+      ADD AX,30H
+      MOV RESULT,AX
+      MOV AH, 2 
+                     ; set output function
+      MOV DX, RESULT              ; set DL=20H
+      INT 21H   
+    ; call print_large_number
       
-      DEC_CX:
-      DEC CX
-      CMP CX,0
-      JE END_
-      JNZ NEW_LINE
+      
+      ADD3: 
+      
+     MOV AH,2
+     MOV DL,0DH
+     INT 21H
+     MOV DL,0AH
+     INT 21H
+      ADD SI,2
+      MOV BX,4
+      MOV AX,ARRAY1[BX][SI] 
+      SUB AX,30H
+      MOV CX,ARRAY2[BX][SI] 
+      SUB CX,30H
+      ADD AX,CX
+      XOR DX,DX
+      ADD AX,30H
+      MOV RESULT,AX
+      MOV AH, 2 
+                    ; set output function
+      MOV DX,RESULT              ; set DL=20H
+      INT 21H   
+      ;call print_large_number
+     
+      
+      ADD4: 
+      MOV AH,2
+      MOV DL,20H
+      INT 21H
+      ADD SI,2
+      MOV BX,4
+      MOV AX,ARRAY1[BX][SI]
+      SUB AX,30H
+      MOV CX,ARRAY2[BX][SI]
+      SUB AX,30H
+      ADD AX,CX
+      XOR DX,DX
+      ADD AX,30H
+      MOV RESULT,AX
+      MOV AH, 2 
+                   ; set output function
+      MOV DX,RESULT             ; set DL=20H
+      INT 21H   
+     ; call print_large_number
+
+      
+
     
 
-END_:      
+END_: 
+   
      MOV AH, 4CH                  ; return control to DOS
      INT 21H
      MAIN ENDP
-       
-print_large_number proc  
-    xor ax,ax
-    xor bx,bx
-    mov ax,RESULT
-    mov bx,10
-    xor cx,cx        
-    xor dx,dx
-                  
-    LOOP_PUSH:        
-    xor dx,dx
-    div bx        
-    push dx    
-    inc cx     
-    cmp ax,0 
-    jne LOOP_PUSH
-    
-    LOOP_POP:
-    pop dx      ;pop values to dx register from the top of the stack  
-    add dx,30h  ;convert to hex ascii
-    mov ah,02h
-    int 21h
-    loop LOOP_POP
-    
-    ret
-     
-print_large_number endp 
+
+ 
 END MAIN   
