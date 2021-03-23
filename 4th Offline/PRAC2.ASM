@@ -4,15 +4,17 @@
  .DATA
     PROMPT  DB  'The resultant 2X2 matrix is  : ',0DH,0AH,'$\'
 
-    ARRAY1   DW  1,3
-             DW  1,5
+    ARRAY1   DW  9,9
+             DW  9,9
             
-    ARRAY2   DW 6,5
-             DW 8,3
+    ARRAY2   DW 9,9
+             DW 9,9
     
     A DW 0
     B DW 0
-    RESULT DW 0        
+    RESULT DW 0
+    C1 DW 0
+    B1 DW 0        
 
  .CODE
    MAIN PROC
@@ -67,10 +69,17 @@
       MOV AH, 2                ; set output function
       MOV DL, 20H              ; set DL=20H
       INT 21H   
-      MOV AH,2
-      ADD RESULT,30H
-      MOV DX,RESULT
-      INT 21H
+      MOV AH,2 
+      MOV C1,CX
+      MOV B1,BX
+      call print_large_number
+      ;ADD RESULT,30H
+      ;MOV DX,RESULT
+     ; INT 21H
+      
+      RESET:
+      MOV CX,C1
+      MOV BX,B1
       
       
       INC_DI_SI:
@@ -86,13 +95,36 @@
       JE END_
       JNZ NEW_LINE
     
-     
 
-     
- 
-      
 END_:      
      MOV AH, 4CH                  ; return control to DOS
      INT 21H
      MAIN ENDP
+       
+print_large_number proc  
+    xor ax,ax
+    xor bx,bx
+    mov ax,RESULT
+    mov bx,10
+    xor cx,cx        
+    xor dx,dx
+                  
+    LOOP_PUSH:        
+    xor dx,dx
+    div bx        
+    push dx    
+    inc cx     
+    cmp ax,0 
+    jne LOOP_PUSH
+    
+    LOOP_POP:
+    pop dx      ;pop values to dx register from the top of the stack  
+    add dx,30h  ;convert to hex ascii
+    mov ah,02h
+    int 21h
+    loop LOOP_POP
+    
+    ret
+     
+print_large_number endp 
 END MAIN   
