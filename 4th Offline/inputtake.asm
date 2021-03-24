@@ -3,13 +3,13 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
 .STACK 100h
 .DATA        
     ARR DB 50 DUP(?)
-    ARR2 DB 50 DUP(?)
+    ARR2 DB 50 DUP(?)  
+    R DB 50 DUP(?)
     RESULT DB 50 DUP(?) ; declare array with null value initially 
    ; MSG DW 0AH,0DH, 'ENTER VALUES : $' 
     MSG DW 0AH,0DH, 'ENTER first matrix VALUES : $'  
     MSG2 DW 0AH,0DH, 'ENTER sECOND matrix VALUES : $' 
     P DB 0
-    Q DW 0
 .CODE
     MAIN PROC
         MOV AX,@DATA
@@ -167,7 +167,9 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         MOV BL,ARR2[SI]
         ADD AL,BL
         MOV P,AL
-        ADD P,30H 
+        ADD P,30H
+        MOV AL,P 
+        mov R[SI],AL
         CALL print_large_number 
         ;MOV AH,2
        ; MOV DL,P
@@ -185,7 +187,9 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         ADD AL,BL
         MOV P,AL
         
-        ADD P,30H
+        ADD P,30H 
+        MOV AL,P 
+        mov R[SI],AL
         CALL PRINT_LARGE_NUMBER 
         ;MOV AH,2
        ; MOV DL,P
@@ -203,6 +207,8 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         ADD AL,BL
         MOV P,AL
         ADD P,30H 
+        MOV AL,P
+        mov R[SI],AL
         CALL PRINT_LARGE_NUMBER
         ;MOV AH,2
        ; MOV DL,P
@@ -220,6 +226,8 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         MOV P,AL
         
         ADD P,30H 
+        MOV AL,P
+        mov R[SI],AL
         CALL PRINT_LARGE_NUMBER
        ; MOV AH,2
        ; MOV DL,P
