@@ -3,11 +3,13 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
 .STACK 100h
 .DATA        
     ARR DB 50 DUP(?)
-    ARR2 DB 50 DUP(?) ; declare array with null value initially 
+    ARR2 DB 50 DUP(?)
+    RESULT DB 50 DUP(?) ; declare array with null value initially 
    ; MSG DW 0AH,0DH, 'ENTER VALUES : $' 
     MSG DW 0AH,0DH, 'ENTER first matrix VALUES : $'  
     MSG2 DW 0AH,0DH, 'ENTER sECOND matrix VALUES : $' 
     P DB 0
+    Q DW 0
 .CODE
     MAIN PROC
         MOV AX,@DATA
@@ -165,10 +167,11 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         MOV BL,ARR2[SI]
         ADD AL,BL
         MOV P,AL
-        ADD P,30H
-        MOV AH,2
-        MOV DL,P
-        INT 21H
+        ADD P,30H 
+        CALL print_large_number 
+        ;MOV AH,2
+       ; MOV DL,P
+        ;INT 21H
         INC SI       
         
         OUTPUT2:
@@ -182,10 +185,11 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         ADD AL,BL
         MOV P,AL
         
-        ADD P,30H 
-        MOV AH,2
-        MOV DL,P
-        INT 21H
+        ADD P,30H
+        CALL PRINT_LARGE_NUMBER 
+        ;MOV AH,2
+       ; MOV DL,P
+        ;INT 21H
         INC SI 
         OUTPUT3:
         
@@ -199,9 +203,10 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         ADD AL,BL
         MOV P,AL
         ADD P,30H 
-        MOV AH,2
-        MOV DL,P
-        INT 21H
+        CALL PRINT_LARGE_NUMBER
+        ;MOV AH,2
+       ; MOV DL,P
+        ;INT 21H
         INC SI 
         OUTPUT4:
         
@@ -215,11 +220,41 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         MOV P,AL
         
         ADD P,30H 
-        MOV AH,2
-        MOV DL,P
-        INT 21H
-        INC SI 
+        CALL PRINT_LARGE_NUMBER
+       ; MOV AH,2
+       ; MOV DL,P
+       ; INT 21H
+        JMP QUIT 
      
-END_:       
-  MAIN ENDP
-END MAIN
+    QUIT:
+    mov ah,04ch
+    int 21h
+main endp 
+print_large_number proc  
+    xor ax,ax
+    xor bx,bx
+    mov aL,P
+    SUB AL,30H
+    mov bx,10
+    xor cx,cx        
+    xor dx,dx
+                  
+    LOOP_PUSH:        
+    xor dx,dx
+    div bx        
+    push dx    
+    inc cx     
+    cmp ax,0 
+    jne LOOP_PUSH
+    
+    LOOP_POP:
+    pop dx      ;pop values to dx register from the top of the stack  
+    add dx,30h  ;convert to hex ascii
+    mov ah,02h
+    int 21h
+    loop LOOP_POP
+    
+    ret
+print_large_number endp
+
+    end main
