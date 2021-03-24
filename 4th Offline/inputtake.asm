@@ -97,7 +97,7 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         
         AND AL,0FH ;convert from ascii value to real value
         
-        MOV ARR[SI],AL
+        MOV ARR2[SI],AL
         INC SI
        
         ;SECOND
@@ -110,7 +110,7 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
        
         AND AL,0FH ;convert from ascii value to real value
         
-        MOV ARR[SI],AL
+        MOV ARR2[SI],AL
         INC SI
       
         ;THIRD
@@ -125,7 +125,7 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         
         AND AL,0FH ;convert from ascii value to real value
         
-        MOV ARR[SI],AL
+        MOV ARR2[SI],AL
         INC SI
        
         ;FOURTH
@@ -138,24 +138,34 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         
         AND AL,0FH ;convert from ascii value to real value
         
-        MOV ARR[SI],AL
+        MOV ARR2[SI],AL
         
         
         OUTPUT:
         MOV SI,0
-        JMP OUTPUT1
+        XOR BX,BX
         
-     
+         
+         
+        MOV AH,2
+        MOV DL,0DH
+        INT 21H 
+        MOV DL,0AH
+        INT 21H
         
         OUTPUT1:
         
         MOV AH,2
-        MOV DL,0AH
+        MOV DL,0DH
         INT 21H 
+        MOV DL,0AH
+        INT 21H
                
         MOV AL,ARR[SI]
+        MOV BL,ARR2[SI]
+        ADD AL,BL
         MOV P,AL
-        ADD P,30H 
+        ADD P,30H
         MOV AH,2
         MOV DL,P
         INT 21H
@@ -168,7 +178,10 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         INT 21H 
                
         MOV AL,ARR[SI]
+        MOV BL,ARR2[SI]
+        ADD AL,BL
         MOV P,AL
+        
         ADD P,30H 
         MOV AH,2
         MOV DL,P
@@ -182,6 +195,8 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         MOV DL,0AH
         INT 21H       
         MOV AL,ARR[SI]
+        MOV BL,ARR2[SI]
+        ADD AL,BL
         MOV P,AL
         ADD P,30H 
         MOV AH,2
@@ -194,8 +209,11 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
         MOV DL,20H
         INT 21H 
                
-        MOV AL,ARR[SI]
+        MOV AL,ARR[SI] 
+        MOV BL,ARR2[SI]
+        ADD AL,BL
         MOV P,AL
+        
         ADD P,30H 
         MOV AH,2
         MOV DL,P
