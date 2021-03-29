@@ -7,8 +7,8 @@ INCLUDE 'EMU8086.INC'      ;include an assembly library
     R DB 50 DUP(?)
     RESULT DB 50 DUP(?) ; declare array with null value initially 
    ; MSG DW 0AH,0DH, 'ENTER VALUES : $' 
-    MSG DW 0AH,0DH, 'ENTER first matrix VALUES : $'  
-    MSG2 DW 0AH,0DH, 'ENTER sECOND matrix VALUES : $' 
+    MSG DW 0AH,0DH, 'ENTER FIRST matrix VALUES : $'  
+    MSG2 DW 0AH,0DH, 'ENTER SECOND matrix VALUES : $' 
     P DB 0
 .CODE
     MAIN PROC
