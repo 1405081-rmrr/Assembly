@@ -1,3 +1,4 @@
+By Galib Vai
 .MODEL SMALL ; MODEL SMALL rakhlei hobe e offline er jonno. size e chhoto
 
 ;emne comment lekhe, age semicolon

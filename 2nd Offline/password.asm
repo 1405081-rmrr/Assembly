@@ -1,7 +1,7 @@
 .MODEL small
 
 .STACK 100h
-
+;Password check 2nd offline
 .DATA
 
     A db 0
